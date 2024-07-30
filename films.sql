@@ -1,9 +1,9 @@
--- Drop the database database_pelis if it exists
-DROP DATABASE IF EXISTS database_pelis;
+-- Drop the database database_films if it exists
+DROP DATABASE IF EXISTS database_films;
 
--- Create the database database_pelis
-CREATE DATABASE database_pelis;
-USE database_pelis;
+-- Create the database database_films
+CREATE DATABASE database_films;
+USE database_films;
 
 CREATE TABLE Movies (
     movie_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -20,6 +20,10 @@ CREATE TABLE Genres (
     genre_id INT PRIMARY KEY AUTO_INCREMENT,
     name NVARCHAR(100)
 );
+
+-- Add description column to Genres table
+ALTER TABLE Genres
+ADD description TEXT;
 
 CREATE TABLE Movies_Genres (
     movie_id INT,
@@ -80,6 +84,40 @@ CREATE TABLE Movies_Details (
     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
 );
 
+-- Create trigger to check if the movie already exists before allowing insertion
+DELIMITER //
+
+CREATE TRIGGER before_movie_insert
+BEFORE INSERT ON Movies
+FOR EACH ROW
+BEGIN
+    -- Check if the movie already exists by title and release year
+    IF EXISTS (
+        SELECT 1
+        FROM Movies
+        WHERE title = NEW.title AND release_year = NEW.release_year
+    ) THEN
+        -- If the movie already exists, raise an error
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The movie already exists.';
+    END IF;
+END //
+
+DELIMITER ;
+
+-- Create trigger  to Prevent Negative score Values
+DELIMITER //
+
+CREATE TRIGGER prevent_negative_score
+BEFORE INSERT ON ratings
+FOR EACH ROW
+BEGIN
+    IF NEW.score < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Score value cannot be negative';
+    END IF;
+END //
+
+DELIMITER ;
 -- Insert data into Movies table
 INSERT INTO Movies (title, release_year, duration, synopsis, language, country, rating) VALUES
 ('The Shawshank Redemption', 1994, 142, 'Two imprisoned men bond over a number of years.', 'English', 'USA', 'R'),
@@ -105,6 +143,19 @@ INSERT INTO Genres (name) VALUES
 ('Thriller'),
 ('Comedy'),
 ('Animation');
+
+-- Update data in Genres table with descriptions
+UPDATE Genres SET description = 'Serious presentations or representations of real life or historical events' WHERE name = 'Drama';
+UPDATE Genres SET description = 'Stories involving crime and its detection' WHERE name = 'Crime';
+UPDATE Genres SET description = 'Films with high energy, physical stunts and chases' WHERE name = 'Action';
+UPDATE Genres SET description = 'Films involving travel and exploration in exotic locations' WHERE name = 'Adventure';
+UPDATE Genres SET description = 'Films with magical or supernatural elements' WHERE name = 'Fantasy';
+UPDATE Genres SET description = 'Stories centered on romantic relationships' WHERE name = 'Romance';
+UPDATE Genres SET description = 'Films with futuristic or scientific elements' WHERE name = 'Sci-Fi';
+UPDATE Genres SET description = 'Films that elicit excitement and suspense' WHERE name = 'Thriller';
+UPDATE Genres SET description = 'Films designed to provoke laughter' WHERE name = 'Comedy';
+UPDATE Genres SET description = 'Films using animated images or objects' WHERE name = 'Animation';
+
 
 -- Insert data into Movies_Genres table
 INSERT INTO Movies_Genres (movie_id, genre_id) VALUES
@@ -197,6 +248,20 @@ INSERT INTO Ratings (movie_id, score, date) VALUES
 (9, 5, '2023-01-19'),
 (10, 5, '2023-01-20');
 
+-- Insert data into Movies_Details table
+INSERT INTO Movies_Details (movie_id, budget, box_office, duration) VALUES
+(1, 25000000.00, 28341469.00, 142), -- The Shawshank Redemption
+(2, 6000000.00, 134966411.00, 175), -- The Godfather
+(3, 185000000.00, 1004558444.00, 152), -- The Dark Knight
+(4, 8000000.00, 213928762.00, 154), -- Pulp Fiction
+(5, 94000000.00, 1146030912.00, 201), -- The Lord of the Rings: The Return of the King
+(6, 55000000.00, 678222284.00, 142), -- Forrest Gump
+(7, 160000000.00, 829895144.00, 148), -- Inception
+(8, 63000000.00, 101209702.00, 139), -- Fight Club
+(9, 63000000.00, 465277911.00, 136), -- The Matrix
+(10, 93000000.00, 887871136.00, 178); -- The Lord of the Rings: The Fellowship of the Ring
+
+
 -- Simple Queries
 
 -- 1 Get the title of all registered movies
@@ -261,3 +326,96 @@ WHERE a.name = 'Morgan Freeman';
 SELECT m.title, md.budget, md.box_office
 FROM Movies m
 JOIN Movies_Details md ON m.movie_id = md.movie_id;
+
+-- 6 Get the average rating of each movie
+SELECT m.title, AVG(r.score) AS average_rating
+FROM Movies m
+JOIN Ratings r ON m.movie_id = r.movie_id
+GROUP BY m.title;
+
+-- 7  Get the list of actors who have worked with a specific director (e.g., 'Christopher Nolan')
+SELECT DISTINCT a.name AS actor
+FROM Actors a
+JOIN Movies_Actors ma ON a.actor_id = ma.actor_id
+JOIN Movies m ON ma.movie_id = m.movie_id
+JOIN Movies_Directors md ON m.movie_id = md.movie_id
+JOIN Directors d ON md.director_id = d.director_id
+WHERE d.name = 'Christopher Nolan';
+
+-- 8 Get the average duration of movies for each director
+SELECT d.name AS director, AVG(m.duration) AS average_duration
+FROM Directors d
+JOIN Movies_Directors md ON d.director_id = md.director_id
+JOIN Movies m ON md.movie_id = m.movie_id
+GROUP BY d.name;
+
+-- 9 Get the movies with the highest rating in each genre
+SELECT title, genre, max_rating
+FROM (
+    SELECT m.title, g.name AS genre, MAX(r.score) OVER (PARTITION BY g.name) AS max_rating, r.score
+    FROM Movies m
+    JOIN Movies_Genres mg ON m.movie_id = mg.movie_id
+    JOIN Genres g ON mg.genre_id = g.genre_id
+    JOIN Ratings r ON m.movie_id = r.movie_id
+) AS genre_ratings
+WHERE score = max_rating;
+
+
+-- 10 Get the directors who have directed movies in more than one genre
+SELECT name
+FROM (
+    SELECT d.name, COUNT(DISTINCT mg.genre_id) AS genre_count
+    FROM Directors d
+    JOIN Movies_Directors md ON d.director_id = md.director_id
+    JOIN Movies_Genres mg ON md.movie_id = mg.movie_id
+    GROUP BY d.name
+) AS director_genres
+WHERE genre_count > 1;
+
+-- Transaction that inserts a new movie and its related details into multiple tables
+START TRANSACTION;
+
+-- Insert into Movies
+INSERT INTO Movies (title, release_year, duration, synopsis, language, country, rating) VALUES
+('The Matrix Reloaded', 2003, 138, 'Neo and the rebel leaders estimate that they have 72 hours until 250,000 probes discover Zion and destroy it.', 'English', 'USA', 'R');
+
+-- Get the last inserted movie_id
+SET @last_movie_id = LAST_INSERT_ID();
+
+-- Insert into Movies_Details
+INSERT INTO Movies_Details (movie_id, budget, box_office, duration) VALUES
+(@last_movie_id, 150000000, 742128461, 138);
+
+-- Insert into Movies_Genres
+INSERT INTO Movies_Genres (movie_id, genre_id) VALUES
+(@last_movie_id, (SELECT genre_id FROM Genres WHERE name = 'Sci-Fi'));
+COMMIT;
+
+-- Function 1: Calculate Average Rating for a Movie
+
+DELIMITER //
+
+CREATE FUNCTION get_avg_rating(movie_id INT) RETURNS DECIMAL(3, 2)
+BEGIN
+    DECLARE avg_rating DECIMAL(3, 2);
+    SELECT AVG(score) INTO avg_rating
+    FROM Ratings
+    WHERE movie_id = movie_id;
+    RETURN avg_rating;
+end//
+
+DELIMITER ;
+
+-- Function 2: Get Movie Duration
+DELIMITER //
+CREATE FUNCTION get_movie_duration(movie_id INT) RETURNS INT
+BEGIN
+    DECLARE duration INT;
+    SELECT duration INTO duration
+    FROM Movies
+    WHERE movie_id = movie_id;
+    RETURN duration;
+end//
+
+DELIMITER ;
+
