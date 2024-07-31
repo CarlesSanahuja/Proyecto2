@@ -4,25 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Películas</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Agregar Nueva Playa</h1>
-      <!-- ¿Os acordáis que los form pueden tener cabeceras? Ahora veréis para qué sirven :) La cabecera nos conecta directamente con el back. -->
-      <form action="/agregar_playa" method="post">
-        <label for="nombre">Nombre de la Playa:</label>
-        <input type="text" id="nombre" name="nombre" required />
-
-        <label for="ubicacion">Ubicación:</label>
-        <input type="text" id="ubicacion" name="ubicacion" required />
-
-        <label for="descripcion">Descripción:</label>
-        <textarea id="descripcion" name="descripcion"></textarea>
-
-        <button type="submit">Agregar Playa</button>
-      </form>
-
+        <div class="form-header">
+            <h2>Add Movie</h2>
+        </div>
+        <form id="add-movie-form" method="POST" action="/add_movie">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="release_year">Release Year</label>
+                <input type="number" id="release_year" name="release_year" required>
+            </div>
+            <div class="form-group">
+                <label for="duration">Duration (minutes)</label>
+                <input type="number" id="duration" name="duration" required>
+            </div>
+            <div class="form-group">
+                <label for="synopsis">Synopsis</label>
+                <textarea id="synopsis" name="synopsis" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="language">Language</label>
+                <input type="text" id="language" name="language" required>
+            </div>
+            <div class="form-group">
+                <label for="country">Country</label>
+                <input type="text" id="country" name="country" required>
+            </div>
+            <div class="form-group">
+                <label for="rating">Rating</label>
+                <input type="text" id="rating" name="rating" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Add Movie</button>
+            </div>
+        </form>
     </div>
     <div class="container">
         <h1>Mis Películas</h1>
@@ -37,30 +58,14 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for movie in movies %}
                     <tr>
-                        <td>Pulp Fiction</td>
-                        <td>1994</td>
-                        <td>Drama</td>
-                        <td>9.2</td>
+                        <td>{{ movie.title }}</td>
+                        <td>{{ movie.release_year }}</td>
+                        <td>{{ movie.genre }}</td>
+                        <td>{{ movie.rating }}</td>
                     </tr>
-                    <tr>
-                        <td>The Godfather</td>
-                        <td>1972</td>
-                        <td>Drama</td>
-                        <td>9.0</td>
-                    </tr>
-                    <tr>
-                        <td>Eternal Sunshine of the Spotless Mind</td>
-                        <td>2004</td>
-                        <td>Drama</td>
-                        <td>8.9</td>
-                    </tr>
-                    <tr>
-                        <td>Casablanca</td>
-                        <td>1942</td>
-                        <td>Drama</td>
-                        <td>8.8</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </section>

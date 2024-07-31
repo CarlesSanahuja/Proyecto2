@@ -13,7 +13,7 @@ CREATE TABLE Movies (
     synopsis TEXT,
     language NVARCHAR(50),
     country NVARCHAR(100),
-    rating NVARCHAR(50)
+    rating decimal (10,2)
 );
 
 CREATE TABLE Genres (
@@ -68,13 +68,6 @@ CREATE TABLE Reviews (
     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
 );
 
-CREATE TABLE Ratings (
-    rating_id INT PRIMARY KEY AUTO_INCREMENT,
-    movie_id INT,
-    score INT,
-    date DATE,
-    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
-);
 
 CREATE TABLE Movies_Details (
     movie_id INT PRIMARY KEY,
@@ -107,11 +100,11 @@ DELIMITER ;
 -- Create trigger  to Prevent Negative score Values
 DELIMITER //
 
-CREATE TRIGGER prevent_negative_score
-BEFORE INSERT ON ratings
+CREATE TRIGGER prevent_negative_rating
+BEFORE INSERT ON movies
 FOR EACH ROW
 BEGIN
-    IF NEW.score < 0 THEN
+    IF NEW.rating < 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Score value cannot be negative';
     END IF;
@@ -120,16 +113,16 @@ END //
 DELIMITER ;
 -- Insert data into Movies table
 INSERT INTO Movies (title, release_year, duration, synopsis, language, country, rating) VALUES
-('The Shawshank Redemption', 1994, 142, 'Two imprisoned men bond over a number of years.', 'English', 'USA', 'R'),
-('The Godfather', 1972, 175, 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.', 'English', 'USA', 'R'),
-('The Dark Knight', 2008, 152, 'When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.', 'English', 'USA', 'PG-13'),
-('Pulp Fiction', 1994, 154, 'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.', 'English', 'USA', 'R'),
-('The Lord of the Rings: The Return of the King', 2003, 201, 'Gandalf and Aragorn lead the World of Men against Sauron''s army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.', 'English', 'New Zealand', 'PG-13'),
-('Forrest Gump', 1994, 142, 'The presidencies of Kennedy and Johnson, the events of Vietnam, Watergate, and other history unfold through the perspective of an Alabama man with an IQ of 75.', 'English', 'USA', 'PG-13'),
-('Inception', 2010, 148, 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.', 'English', 'USA', 'PG-13'),
-('Fight Club', 1999, 139, 'An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into something much, much more.', 'English', 'USA', 'R'),
-('The Matrix', 1999, 136, 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.', 'English', 'USA', 'R'),
-('The Lord of the Rings: The Fellowship of the Ring', 2001, 178, 'A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron.', 'English', 'New Zealand', 'PG-13');
+('The Shawshank Redemption', 1994, 142, 'Two imprisoned men bond over a number of years.', 'English', 'USA', 8),
+('The Godfather', 1972, 175, 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.', 'English', 'USA', 9.5),
+('The Dark Knight', 2008, 152, 'When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.', 'English', 'USA', 9),
+('Pulp Fiction', 1994, 154, 'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.', 'English', 'USA',9),
+('The Lord of the Rings: The Return of the King', 2003, 201, 'Gandalf and Aragorn lead the World of Men against Sauron''s army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.', 'English', 'New Zealand', 9.8),
+('Forrest Gump', 1994, 142, 'The presidencies of Kennedy and Johnson, the events of Vietnam, Watergate, and other history unfold through the perspective of an Alabama man with an IQ of 75.', 'English', 'USA', 8.6),
+('Inception', 2010, 148, 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.', 'English', 'USA', 9.4),
+('Fight Club', 1999, 139, 'An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into something much, much more.', 'English', 'USA', 8.7),
+('The Matrix', 1999, 136, 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.', 'English', 'USA', 9.2),
+('The Lord of the Rings: The Fellowship of the Ring', 2001, 178, 'A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron.', 'English', 'New Zealand', 9);
 
 -- Insert data into Genres table
 INSERT INTO Genres (name) VALUES
@@ -235,18 +228,6 @@ INSERT INTO Reviews (movie_id, text, date) VALUES
 (9, 'Revolutionary sci-fi.', '2023-01-19'),
 (10, 'Incredible journey.', '2023-01-20');
 
--- Insert data into Ratings table
-INSERT INTO Ratings (movie_id, score, date) VALUES
-(1, 5, '2023-01-11'),
-(2, 5, '2023-01-12'),
-(3, 5, '2023-01-13'),
-(4, 5, '2023-01-14'),
-(5, 5, '2023-01-15'),
-(6, 5, '2023-01-16'),
-(7, 5, '2023-01-17'),
-(8, 5, '2023-01-18'),
-(9, 5, '2023-01-19'),
-(10, 5, '2023-01-20');
 
 -- Insert data into Movies_Details table
 INSERT INTO Movies_Details (movie_id, budget, box_office, duration) VALUES
@@ -274,7 +255,7 @@ SELECT * FROM Genres;
 SELECT text FROM Reviews WHERE review_id = 4;
 
 -- 4 Show rating for the movie Pulp Fiction with id 4
-SELECT score FROM Ratings WHERE movie_id = 4;
+SELECT rating FROM movies WHERE movie_id = 4;
 
 -- 5 Show the id of the actors in the movie Pulp Fiction with id 4
 SELECT actor_id FROM Movies_Actors WHERE movie_id = 4;
@@ -328,9 +309,8 @@ FROM Movies m
 JOIN Movies_Details md ON m.movie_id = md.movie_id;
 
 -- 6 Get the average rating of each movie
-SELECT m.title, AVG(r.score) AS average_rating
+SELECT m.title, AVG(m.rating) AS average_rating
 FROM Movies m
-JOIN Ratings r ON m.movie_id = r.movie_id
 GROUP BY m.title;
 
 -- 7  Get the list of actors who have worked with a specific director (e.g., 'Christopher Nolan')
@@ -352,13 +332,12 @@ GROUP BY d.name;
 -- 9 Get the movies with the highest rating in each genre
 SELECT title, genre, max_rating
 FROM (
-    SELECT m.title, g.name AS genre, MAX(r.score) OVER (PARTITION BY g.name) AS max_rating, r.score
+    SELECT m.title, g.name AS genre, MAX(m.rating) OVER (PARTITION BY g.name) AS max_rating,m.rating
     FROM Movies m
     JOIN Movies_Genres mg ON m.movie_id = mg.movie_id
     JOIN Genres g ON mg.genre_id = g.genre_id
-    JOIN Ratings r ON m.movie_id = r.movie_id
 ) AS genre_ratings
-WHERE score = max_rating;
+WHERE rating = max_rating;
 
 
 -- 10 Get the directors who have directed movies in more than one genre
@@ -377,7 +356,7 @@ START TRANSACTION;
 
 -- Insert into Movies
 INSERT INTO Movies (title, release_year, duration, synopsis, language, country, rating) VALUES
-('The Matrix Reloaded', 2003, 138, 'Neo and the rebel leaders estimate that they have 72 hours until 250,000 probes discover Zion and destroy it.', 'English', 'USA', 'R');
+('The Matrix Reloaded', 2003, 138, 'Neo and the rebel leaders estimate that they have 72 hours until 250,000 probes discover Zion and destroy it.', 'English', 'USA', 10);
 
 -- Get the last inserted movie_id
 SET @last_movie_id = LAST_INSERT_ID();
@@ -398,8 +377,8 @@ DELIMITER //
 CREATE FUNCTION get_avg_rating(movie_id INT) RETURNS DECIMAL(3, 2)
 BEGIN
     DECLARE avg_rating DECIMAL(3, 2);
-    SELECT AVG(score) INTO avg_rating
-    FROM Ratings
+    SELECT AVG(rating) INTO avg_rating
+    FROM movies m 
     WHERE movie_id = movie_id;
     RETURN avg_rating;
 end//
