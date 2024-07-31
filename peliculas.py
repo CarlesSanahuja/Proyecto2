@@ -46,6 +46,7 @@ def add_movie():
         )
         connection.commit()
         message = "Movie added successfully!"
+        return index()
     except mysql.connector.Error as err:
         message = f"Error: {err}"
     finally:
