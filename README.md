@@ -1,4 +1,6 @@
 # Proyecto de Gestión de Películas
+## Imágenes de la web
+![Entrada de peliculas,directores y actores](images/1.png)
 
 ## Descripción del Proyecto
 
