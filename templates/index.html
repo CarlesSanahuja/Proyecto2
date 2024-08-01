@@ -11,7 +11,7 @@
         <div class="form-header">
             <h2>Add Movie</h2>
         </div>
-        <form id="add-movie-form" method="POST" action="/add_movie">
+        <form id="add-movie-form">
             <div class="form-group">
                 <label for="title">Title</label>
                 <input type="text" id="title" name="title" required>
@@ -45,6 +45,97 @@
             </div>
         </form>
     </div>
+
+    <div class="container">
+        <div class="form-header">
+            <h2>Add Details to Movie</h2>
+        </div>
+        <form id="add-details-form">
+            <div class="form-group">
+                <label for="movie_id">Movie</label>
+                <select id="movie_id" name="movie_id" required>
+                    <option value="">Select a movie</option>
+                    {% for movie in movies %}
+                    <option value="{{ movie.movie_id }}">{{ movie.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="genre_id">Genre</label>
+                <select id="genre_id" name="genre_id">
+                    <option value="">Select a genre</option>
+                    {% for genre in genres %}
+                    <option value="{{ genre.genre_id }}">{{ genre.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="actor_id">Actor</label>
+                <select id="actor_id" name="actor_id">
+                    <option value="">Select an actor</option>
+                    {% for actor in actors %}
+                    <option value="{{ actor.actor_id }}">{{ actor.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="director_id">Director</label>
+                <select id="director_id" name="director_id">
+                    <option value="">Select a director</option>
+                    {% for director in directors %}
+                    <option value="{{ director.director_id }}">{{ director.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="budget">Budget</label>
+                <input type="number" id="budget" name="budget" required>
+            </div>
+            <div class="form-group">
+                <label for="box_office">Box office</label>
+                <input type="number" id="box_office" name="box_office" required>
+            </div>
+            <div class="form-group">
+                <label for="duration">Duration</label>
+                <input type="number" id="duration" name="duration" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Add Details</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <div class="form-header">
+            <h2>Add Actor</h2>
+        </div>
+        <form id="add-actor-form">
+            <div class="form-group">
+                <label for="name">Actor Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Add Actor</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <div class="form-header">
+            <h2>Add Director</h2>
+        </div>
+        <form id="add-director-form">
+            <div class="form-group">
+                <label for="name">Director Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Add Director</button>
+            </div>
+        </form>
+    </div>
+
     <div class="container">
         <h1>Mis Películas</h1>
         <section>
@@ -53,8 +144,15 @@
                     <tr>
                         <th>Título</th>
                         <th>Año</th>
-                        <th>Género</th>
+                        <th>Duración</th>
+                        <th>Sinopsis</th>
+                        <th>Idioma</th>
+                        <th>País</th>
                         <th>Puntuación</th>
+                        <th>Géneros</th>
+                        <th>Actores</th>
+                        <th>Directores</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,13 +160,111 @@
                     <tr>
                         <td>{{ movie.title }}</td>
                         <td>{{ movie.release_year }}</td>
-                        <td>{{ movie.genre }}</td>
+                        <td>{{ movie.duration }}</td>
+                        <td>{{ movie.synopsis }}</td>
+                        <td>{{ movie.language }}</td>
+                        <td>{{ movie.country }}</td>
                         <td>{{ movie.rating }}</td>
+                        <td>{{ movie.genres }}</td>
+                        <td>{{ movie.actors }}</td>
+                        <td>{{ movie.directors }}</td>
+                        <td>
+                            <button class="details-button" data-movie-id="{{ movie.movie_id }}">Details</button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </section>
     </div>
+
+    <script>
+        document.getElementById('add-movie-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+
+            const response = await fetch('/add_movie', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            alert(result.message);
+
+            if (result.message === 'Movie added successfully!') {
+                window.location.reload();
+            }
+        });
+
+        document.getElementById('add-details-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+
+            const response = await fetch('/add_details', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            alert(result.message);
+
+            if (result.message === 'Details added successfully!') {
+                window.location.reload();
+            }
+        });
+
+        document.getElementById('add-actor-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+
+            const response = await fetch('/add_actor', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            alert(result.message);
+
+            if (result.message === 'Actor added successfully!') {
+                window.location.reload();
+            }
+        });
+
+        document.getElementById('add-director-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+
+            const response = await fetch('/add_director', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            alert(result.message);
+
+            if (result.message === 'Director added successfully!') {
+                window.location.reload();
+            }
+        });
+
+        document.querySelectorAll('.details-button').forEach(button => {
+            button.addEventListener('click', async function() {
+                const movieId = this.getAttribute('data-movie-id');
+
+                const response = await fetch(`/movie_details/${movieId}`);
+                const details = await response.json();
+
+                alert(`Budget: ${details.budget}, Box Office: ${details.box_office}, Duration: ${details.duration}`);
+            });
+        });
+    </script>
 </body>
 </html>
