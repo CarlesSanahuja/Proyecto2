@@ -7,45 +7,76 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <div class="form-header">
-            <h2>Add Movie</h2>
+    <h1>Mi lista de peliculas</h1>
+    <div class="containers">
+        <div class="container">
+            <div class="form-header">
+                <h2>Add Movie</h2>
+            </div>
+            <form id="add-movie-form">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="release_year">Release Year</label>
+                    <input type="number" id="release_year" name="release_year" required>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duration (minutes)</label>
+                    <input type="number" id="duration" name="duration" required>
+                </div>
+                <div class="form-group">
+                    <label for="synopsis">Synopsis</label>
+                    <textarea id="synopsis" name="synopsis" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="language">Language</label>
+                    <input type="text" id="language" name="language" required>
+                </div>
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country" required>
+                </div>
+                <div class="form-group">
+                    <label for="rating">Rating</label>
+                    <input type="text" id="rating" name="rating" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Add Movie</button>
+                </div>
+            </form>
         </div>
-        <form id="add-movie-form">
-            <div class="form-group">
-                <label for="title">Title</label>
-                <input type="text" id="title" name="title" required>
+        <div class="container">
+            <div class="form-header">
+                <h2>Add Actor</h2>
             </div>
-            <div class="form-group">
-                <label for="release_year">Release Year</label>
-                <input type="number" id="release_year" name="release_year" required>
+            <form id="add-actor-form">
+                <div class="form-group">
+                    <label for="name">Actor Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Add Actor</button>
+                </div>
+            </form>
+        </div>
+    
+        <div class="container">
+            <div class="form-header">
+                <h2>Add Director</h2>
             </div>
-            <div class="form-group">
-                <label for="duration">Duration (minutes)</label>
-                <input type="number" id="duration" name="duration" required>
-            </div>
-            <div class="form-group">
-                <label for="synopsis">Synopsis</label>
-                <textarea id="synopsis" name="synopsis" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="language">Language</label>
-                <input type="text" id="language" name="language" required>
-            </div>
-            <div class="form-group">
-                <label for="country">Country</label>
-                <input type="text" id="country" name="country" required>
-            </div>
-            <div class="form-group">
-                <label for="rating">Rating</label>
-                <input type="text" id="rating" name="rating" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">Add Movie</button>
-            </div>
-        </form>
+            <form id="add-director-form">
+                <div class="form-group">
+                    <label for="name">Director Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Add Director</button>
+                </div>
+            </form>
+        </div>
     </div>
-
     <div class="container">
         <div class="form-header">
             <h2>Add Details to Movie</h2>
@@ -102,36 +133,6 @@
 
             <div class="form-group">
                 <button type="submit">Add Details</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="container">
-        <div class="form-header">
-            <h2>Add Actor</h2>
-        </div>
-        <form id="add-actor-form">
-            <div class="form-group">
-                <label for="name">Actor Name</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">Add Actor</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="container">
-        <div class="form-header">
-            <h2>Add Director</h2>
-        </div>
-        <form id="add-director-form">
-            <div class="form-group">
-                <label for="name">Director Name</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">Add Director</button>
             </div>
         </form>
     </div>
