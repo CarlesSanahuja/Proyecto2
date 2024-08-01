@@ -41,8 +41,7 @@ Este proyecto es una aplicación web para la gestión de películas. Permite agr
 ## Diagrama ER
 
 El diagrama de entidades y relaciones (ER) de la base de datos es el siguiente:
-
-
+![Esquema ER](static/images/esquema ER.png)
 ## Funcionalidades de la Web
 
 - **Agregar Películas**: Permite añadir nuevas películas con información básica.
