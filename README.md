@@ -57,6 +57,7 @@ La base de datos está diseñada para almacenar y relacionar información de pel
 - **Escalabilidad**: Se pueden añadir nuevas entidades (como más géneros o actores) sin modificar la estructura existente.
 - **Flexibilidad**: Es fácil relacionar una película con múltiples géneros, actores y directores.
 - **Integridad**: Las tablas intermedias ayudan a mantener la integridad referencial entre las entidades.
+- He decidido hacer tablas separadas para los géneros actores y directores para evitar la duplicidad de estos registros.                                                                                                                                                                                                                                                                                                                                          
 
 ## Tecnologías Utilizadas
 
