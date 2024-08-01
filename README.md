@@ -1,7 +1,8 @@
 # Proyecto de Gestión de Películas
 ## Imágenes de la web
 ![Entrada de peliculas,directores y actores](static/images/1.png)
-
+![Entrada de datos adicionales](static/images/2.png)
+![Listado de películas](static/images/3.png)
 ## Descripción del Proyecto
 
 Este proyecto es una aplicación web para la gestión de películas. Permite agregar películas a una base de datos, así como asignarles géneros, actores y directores. Además, se pueden añadir detalles adicionales como el presupuesto, la recaudación en taquilla y la duración de las películas. La aplicación permite consultar y visualizar la información de las películas en una interfaz sencilla.
