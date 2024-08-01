@@ -1,4 +1,9 @@
 # Proyecto de Gestión de Películas
+## Background
+Mi nombre es Carlos Sanahuja
+Mi background profesional no ha estado relacionado con la informática, pero tras una operación de espalda me comencé a reciclar profesionalmente y opté por la programación ya que es algo que me ha gustado desde siempre.
+A partir de la operación de espalda he cursado los dos primeros trimestres de DAW y he realizado diversos cursos de html, CSS, Java y C+ en la plataforma Udemy.
+
 ## Imágenes de la web
 ![Entrada de peliculas,directores y actores](static/images/1.png)
 ![Entrada de datos adicionales](static/images/2.png)
