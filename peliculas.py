@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash
 import mysql.connector
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Necesario para usar flash messages
 
 # Database connection
 def get_db_connection():
@@ -13,7 +14,6 @@ def get_db_connection():
     )
     return connection
 
-# Home route with form and movie list
 @app.route('/')
 def index():
     connection = get_db_connection()
@@ -34,14 +34,14 @@ def index():
         GROUP BY m.movie_id
     """)
     movies = cursor.fetchall()
-
-    cursor.execute("SELECT genre_id, name FROM Genres")
+    
+    cursor.execute("SELECT * FROM Genres")
     genres = cursor.fetchall()
 
-    cursor.execute("SELECT actor_id, name FROM Actors")
+    cursor.execute("SELECT * FROM Actors")
     actors = cursor.fetchall()
 
-    cursor.execute("SELECT director_id, name FROM Directors")
+    cursor.execute("SELECT * FROM Directors")
     directors = cursor.fetchall()
 
     cursor.close()
@@ -49,7 +49,6 @@ def index():
 
     return render_template('index.html', movies=movies, genres=genres, actors=actors, directors=directors)
 
-# Route to add movie
 @app.route('/add_movie', methods=['POST'])
 def add_movie():
     title = request.form['title']
@@ -69,16 +68,15 @@ def add_movie():
             (title, release_year, duration, synopsis, language, country, rating)
         )
         connection.commit()
-        message = "Movie added successfully!"
+        flash('Movie added successfully!', 'success')
     except mysql.connector.Error as err:
-        message = f"Error: {err}"
+        flash(f'Error: {err}', 'danger')
     finally:
         cursor.close()
         connection.close()
 
-    return jsonify({'message': message})
+    return redirect(url_for('index'))
 
-# Route to add genre, actor, director to a movie
 @app.route('/add_details', methods=['POST'])
 def add_details():
     movie_id = request.form['movie_id']
@@ -88,6 +86,8 @@ def add_details():
     budget = request.form['budget']
     box_office = request.form['box_office']
     duration = request.form['duration']
+    review = request.form['review']
+    date = request.form['review_date']
 
     connection = get_db_connection()
     cursor = connection.cursor()
@@ -108,22 +108,26 @@ def add_details():
                 "INSERT INTO Movies_Directors (movie_id, director_id) VALUES (%s, %s)",
                 (movie_id, director_id)
             )
-        if budget:
+        if budget or box_office or duration:
             cursor.execute(
-                "INSERT INTO Movies_details (movie_id, budget, box_office,duration) VALUES (%s, %s, %s,%s)",
-                (movie_id, budget, box_office,duration)
+                "INSERT INTO Movies_details (movie_id, budget, box_office, duration) VALUES (%s, %s, %s, %s)",
+                (movie_id, budget, box_office, duration)
+            )
+        if review:
+            cursor.execute(
+                "INSERT INTO reviews (movie_id, review, date) VALUES (%s, %s, %s)",
+                (movie_id, review, date)
             )
         connection.commit()
-        message = "Details added successfully!"
+        flash('Details added successfully!', 'success')
     except mysql.connector.Error as err:
-        message = f"Error: {err}"
+        flash(f'Error: {err}', 'danger')
     finally:
         cursor.close()
         connection.close()
 
-    return jsonify({'message': message})
+    return redirect(url_for('index'))
 
-# Route to add actor
 @app.route('/add_actor', methods=['POST'])
 def add_actor():
     name = request.form['name']
@@ -134,16 +138,15 @@ def add_actor():
     try:
         cursor.execute("INSERT INTO Actors (name) VALUES (%s)", (name,))
         connection.commit()
-        message = "Actor added successfully!"
+        flash('Actor added successfully!', 'success')
     except mysql.connector.Error as err:
-        message = f"Error: {err}"
+        flash(f'Error: {err}', 'danger')
     finally:
         cursor.close()
         connection.close()
 
-    return jsonify({'message': message})
+    return redirect(url_for('index'))
 
-# Route to add director
 @app.route('/add_director', methods=['POST'])
 def add_director():
     name = request.form['name']
@@ -154,26 +157,71 @@ def add_director():
     try:
         cursor.execute("INSERT INTO Directors (name) VALUES (%s)", (name,))
         connection.commit()
-        message = "Director added successfully!"
+        flash('Director added successfully!', 'success')
     except mysql.connector.Error as err:
-        message = f"Error: {err}"
+        flash(f'Error: {err}', 'danger')
     finally:
         cursor.close()
         connection.close()
 
-    return jsonify({'message': message})
-# Ruta para obtener los detalles de una película
+    return redirect(url_for('index'))
+
 @app.route('/movie_details/<int:movie_id>', methods=['GET'])
 def movie_details(movie_id):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM Movies_Details WHERE movie_id = %s", (movie_id,))
-    details = cursor.fetchone()
 
-    if details:
-        return jsonify(details)
+    cursor.execute("""
+        SELECT m.movie_id, m.title, m.release_year, m.duration, m.synopsis, m.language, m.country, m.rating,
+               GROUP_CONCAT(DISTINCT g.name ORDER BY g.name ASC SEPARATOR ', ') as genres,
+               GROUP_CONCAT(DISTINCT a.name ORDER BY a.name ASC SEPARATOR ', ') as actors,
+               GROUP_CONCAT(DISTINCT d.name ORDER BY d.name ASC SEPARATOR ', ') as directors,
+               de.budget, de.box_office, de.duration as detail_duration
+        FROM Movies m
+        LEFT JOIN Movies_Genres mg ON m.movie_id = mg.movie_id
+        LEFT JOIN Genres g ON mg.genre_id = g.genre_id
+        LEFT JOIN Movies_Actors ma ON m.movie_id = ma.movie_id
+        LEFT JOIN Actors a ON ma.actor_id = a.actor_id
+        LEFT JOIN Movies_Directors md ON m.movie_id = md.movie_id
+        LEFT JOIN Directors d ON md.director_id = d.director_id
+        LEFT JOIN Movies_details de ON m.movie_id = de.movie_id
+        WHERE m.movie_id = %s
+        GROUP BY m.movie_id
+    """, (movie_id,))
+    movie = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    if movie:
+        return render_template('details.html', movie=movie)
     else:
-        return jsonify({'message': 'No details found for this movie'})
+        flash('Movie not found!', 'danger')
+        return redirect(url_for('index'))
+
+@app.route('/delete_movie', methods=['POST'])
+def delete_movie():
+    movie_id = request.form['movie_id']
+    
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("DELETE FROM Movies_genres WHERE movie_id = %s", (movie_id,))
+        cursor.execute("DELETE FROM Movies_actors WHERE movie_id = %s", (movie_id,))
+        cursor.execute("DELETE FROM Movies_directors WHERE movie_id = %s", (movie_id,))
+        cursor.execute("DELETE FROM Movies_details WHERE movie_id = %s", (movie_id,))
+        cursor.execute("DELETE FROM reviews WHERE movie_id = %s", (movie_id,))
+        cursor.execute("DELETE FROM Movies WHERE movie_id = %s", (movie_id,))
+        connection.commit()
+        flash('Movie deleted successfully!', 'success')
+    except mysql.connector.Error as err:
+        flash(f'Error: {err}', 'danger')
+    finally:
+        cursor.close()
+        connection.close()
+
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)

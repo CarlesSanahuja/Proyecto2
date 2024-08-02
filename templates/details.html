@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de la Película</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Detalles de la Película</h1>
+    <div class="movie-details">
+        <h2>{{ movie.title }} ({{ movie.release_year }})</h2>
+        <p><strong>Duración:</strong> {{ movie.duration }} minutos</p>
+        <p><strong>Sinopsis:</strong> {{ movie.synopsis }}</p>
+        <p><strong>Idioma:</strong> {{ movie.language }}</p>
+        <p><strong>País:</strong> {{ movie.country }}</p>
+        <p><strong>Calificación:</strong> {{ movie.rating }}</p>
+        <p><strong>Géneros:</strong> {{ movie.genres }}</p>
+        <p><strong>Actores:</strong> {{ movie.actors }}</p>
+        <p><strong>Directores:</strong> {{ movie.directors }}</p>
+        <p><strong>Presupuesto:</strong> {{ movie.budget }}</p>
+        <p><strong>Taquilla:</strong> {{ movie.box_office }}</p>
+        <p><strong>Duración Detallada:</strong> {{ movie.detail_duration }} minutos</p>
+    </div>
+    <a href="{{ url_for('index') }}">Volver al inicio</a>
+</body>
+</html>

@@ -8,12 +8,21 @@
 </head>
 <body>
     <h1>Mi lista de peliculas</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <div class="containers">
         <div class="container">
             <div class="form-header">
                 <h2>Add Movie</h2>
             </div>
-            <form id="add-movie-form">
+            <form action="{{ url_for('add_movie') }}" method="POST">
                 <div class="form-group">
                     <label for="title">Title</label>
                     <input type="text" id="title" name="title" required>
@@ -51,7 +60,7 @@
             <div class="form-header">
                 <h2>Add Actor</h2>
             </div>
-            <form id="add-actor-form">
+            <form action="{{ url_for('add_actor') }}" method="POST">
                 <div class="form-group">
                     <label for="name">Actor Name</label>
                     <input type="text" id="name" name="name" required>
@@ -66,7 +75,7 @@
             <div class="form-header">
                 <h2>Add Director</h2>
             </div>
-            <form id="add-director-form">
+            <form action="{{ url_for('add_director') }}" method="POST">
                 <div class="form-group">
                     <label for="name">Director Name</label>
                     <input type="text" id="name" name="name" required>
@@ -81,7 +90,7 @@
         <div class="form-header">
             <h2>Add Details to Movie</h2>
         </div>
-        <form id="add-details-form">
+        <form action="{{ url_for('add_details') }}" method="POST">
             <div class="form-group">
                 <label for="movie_id">Movie</label>
                 <select id="movie_id" name="movie_id" required>
@@ -130,7 +139,14 @@
                 <label for="duration">Duration</label>
                 <input type="number" id="duration" name="duration">
             </div>
-
+            <div class="form-group">
+                <label for="review">Review</label>
+                <input type="text" id="review" name="review">
+            </div>
+            <div class="form-group">
+                <label for="review_date">Review Date</label>
+                <input type="date" id="review_date" name="review_date">
+            </div>
             <div class="form-group">
                 <button type="submit">Add Details</button>
             </div>
@@ -170,7 +186,13 @@
                         <td>{{ movie.actors }}</td>
                         <td>{{ movie.directors }}</td>
                         <td>
-                            <button class="details-button" data-movie-id="{{ movie.movie_id }}">Details</button>
+                            <form method="GET" action="{{ url_for('movie_details', movie_id=movie.movie_id) }}" style="display:inline;">
+                                <button type="submit">Details</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('delete_movie') }}" style="display:inline;">
+                                <input type="hidden" name="movie_id" value="{{ movie.movie_id }}">
+                                <button type="submit" onclick="return confirm('Are you sure you want to delete this movie?');">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
@@ -178,94 +200,5 @@
             </table>
         </section>
     </div>
-
-    <script>
-        document.getElementById('add-movie-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const formData = new FormData(event.target);
-
-            const response = await fetch('/add_movie', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            alert(result.message);
-
-            if (result.message === 'Movie added successfully!') {
-                window.location.reload();
-            }
-        });
-
-        document.getElementById('add-details-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const formData = new FormData(event.target);
-
-            const response = await fetch('/add_details', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            alert(result.message);
-
-            if (result.message === 'Details added successfully!') {
-                window.location.reload();
-            }
-        });
-
-        document.getElementById('add-actor-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const formData = new FormData(event.target);
-
-            const response = await fetch('/add_actor', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            alert(result.message);
-
-            if (result.message === 'Actor added successfully!') {
-                window.location.reload();
-            }
-        });
-
-        document.getElementById('add-director-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const formData = new FormData(event.target);
-
-            const response = await fetch('/add_director', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            alert(result.message);
-
-            if (result.message === 'Director added successfully!') {
-                window.location.reload();
-            }
-        });
-
-        document.querySelectorAll('.details-button').forEach(button => {
-            button.addEventListener('click', async function() {
-                const movieId = this.getAttribute('data-movie-id');
-
-                const response = await fetch(`/movie_details/${movieId}`);
-                const details = await response.json();
-
-                alert(`Budget: ${details.budget}, Box Office: ${details.box_office}, Duration: ${details.duration}`);
-            });
-        });
-    </script>
 </body>
 </html>
