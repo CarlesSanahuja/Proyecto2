@@ -81,21 +81,6 @@ He decidido utilizar tablas separadas para géneros, actores y directores para e
 - **Base de Datos**: MySQL
 - **Frontend**: HTML, CSS
 
-## Instalación y Configuración
-
-1. Clona el repositorio a tu máquina local.
-2. Crea un entorno virtual e instala las dependencias:
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # En Windows: venv\Scripts\activate
-    pip install -r requirements.txt
-    ```
-3. Configura la base de datos MySQL y actualiza la información de conexión en el archivo Python principal.
-4. Ejecuta la aplicación:
-    ```bash
-    flask run
-    ```
-
 ## Conclusión
 
 Este proyecto refleja mi aprendizaje continuo en desarrollo web y bases de datos, integrando conocimientos adquiridos en distintos cursos y aplicándolos en un proyecto práctico que podría ser la base para una aplicación más compleja en el futuro.
