@@ -10,33 +10,43 @@ A partir de la operación de espalda he cursado los dos primeros trimestres de D
 ![Listado de películas](static/images/3.png)
 ## Descripción del Proyecto
 
-Este proyecto es una aplicación web para la gestión de películas. Permite agregar películas a una base de datos, así como asignarles géneros, actores y directores. Además, se pueden añadir detalles adicionales como el presupuesto, la recaudación en taquilla y la duración de las películas. La aplicación permite consultar y visualizar la información de las películas en una interfaz sencilla.
+La aplicación permite a los usuarios:
+- **Agregar Películas**: Ingresar títulos de películas junto con su año de estreno, duración, sinopsis, idioma, país y calificación.
+- **Agregar Detalles a Películas**: Añadir detalles adicionales como géneros, actores, directores, presupuesto, recaudación en taquilla, duración y reseñas.
+- **Agregar Actores y Directores**: Incorporar nuevos actores y directores a la base de datos.
+- **Visualización de Películas**: Ver un listado de las películas almacenadas con sus detalles básicos y acceder a detalles más profundos.
+- **Eliminar Películas**: Borrar películas junto con sus relaciones en la base de datos.
 
 ## Rutas Habilitadas
 
-1. **`/`**: Ruta principal
-   - Muestra el formulario para agregar una película, así como formularios para añadir detalles de películas, actores y directores.
-   - También muestra una lista de películas con sus detalles básicos.
+### `/` : Ruta principal
+- **Método**: GET
+- **Descripción**: Muestra formularios para agregar películas, detalles, actores y directores, junto con una tabla que lista todas las películas con sus detalles básicos.
 
-2. **`/add_movie`**: Ruta para agregar una película
-   - **Método**: `POST`
-   - **Descripción**: Permite agregar una nueva película a la base de datos.
+### `/add_movie` : Ruta para agregar una película
+- **Método**: POST
+- **Descripción**: Permite agregar una nueva película a la base de datos.
 
-3. **`/add_details`**: Ruta para agregar detalles a una película
-   - **Método**: `POST`
-   - **Descripción**: Permite añadir detalles adicionales a una película existente, como géneros, actores, directores, presupuesto, recaudación en taquilla y duración.
+### `/add_details` : Ruta para agregar detalles a una película
+- **Método**: POST
+- **Descripción**: Permite añadir detalles adicionales a una película existente, como géneros, actores, directores, presupuesto, recaudación en taquilla, duración y reseñas.
 
-4. **`/add_actor`**: Ruta para agregar un actor
-   - **Método**: `POST`
-   - **Descripción**: Permite añadir un nuevo actor a la base de datos.
+### `/add_actor` : Ruta para agregar un actor
+- **Método**: POST
+- **Descripción**: Permite añadir un nuevo actor a la base de datos.
 
-5. **`/add_director`**: Ruta para agregar un director
-   - **Método**: `POST`
-   - **Descripción**: Permite añadir un nuevo director a la base de datos.
+### `/add_director` : Ruta para agregar un director
+- **Método**: POST
+- **Descripción**: Permite añadir un nuevo director a la base de datos.
 
-6. **`/movie_details/<int:movie_id>`**: Ruta para obtener los detalles de una película
-   - **Método**: `GET`
-   - **Descripción**: Devuelve los detalles adicionales de una película específica en formato JSON.
+### `/movie_details/<int:movie_id>` : Ruta para obtener los detalles de una película
+- **Método**: GET
+- **Descripción**: Devuelve una página con detalles adicionales de una película específica, incluyendo géneros, actores, directores, presupuesto, taquilla y reseñas.
+
+### `/delete_movie` : Ruta para eliminar una película
+- **Método**: POST
+- **Descripción**: Permite eliminar una película de la base de datos, junto con todas las relaciones asociadas (géneros, actores, directores, detalles y reseñas).
+
 
 ## Diagrama ER
 
