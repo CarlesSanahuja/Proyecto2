@@ -55,22 +55,47 @@ El diagrama de entidades y relaciones (ER) de la base de datos es el siguiente:
 ![Listado de películas](static/images/esquemaER.png)
 ## Funcionalidades de la Web
 
-- **Agregar Películas**: Permite añadir nuevas películas con información básica.
-- **Agregar Detalles a Películas**: Permite añadir detalles adicionales a una película, incluyendo géneros, actores, directores, presupuesto, recaudación en taquilla y duración.
-- **Agregar Actores y Directores**: Permite añadir nuevos actores y directores a la base de datos.
-- **Visualización de Películas**: Muestra una lista de películas con detalles básicos en una tabla.
-- **Detalles Adicionales**: Permite ver detalles adicionales de una película mediante un botón "Details".
+1. **Agregar Películas**: Permite añadir nuevas películas con información básica como título, año de estreno, duración, sinopsis, idioma, país y calificación.
+
+2. **Agregar Detalles a Películas**: Permite añadir detalles adicionales a una película, incluyendo géneros, actores, directores, presupuesto, recaudación en taquilla, duración y reseñas.
+
+3. **Agregar Actores y Directores**: Permite añadir nuevos actores y directores a la base de datos, que luego pueden ser relacionados con una o más películas.
+
+4. **Visualización de Películas**: Muestra una lista de películas con detalles básicos, permitiendo acceder a detalles adicionales a través de un botón "Details".
+
+5. **Eliminar Películas**: Permite eliminar una película y todas sus relaciones asociadas en la base de datos.
 
 ## Justificación de la Base de Datos
 
-La base de datos está diseñada para almacenar y relacionar información de películas, géneros, actores y directores de manera eficiente. La estructura incluye tablas separadas para cada entidad principal y tablas intermedias para manejar las relaciones muchos a muchos (por ejemplo, `Movies_Genres`, `Movies_Actors`, `Movies_Directors`). Esta organización permite:
-- **Escalabilidad**: Se pueden añadir nuevas entidades (como más géneros o actores) sin modificar la estructura existente.
-- **Flexibilidad**: Es fácil relacionar una película con múltiples géneros, actores y directores.
-- **Integridad**: Las tablas intermedias ayudan a mantener la integridad referencial entre las entidades.
-- He decidido hacer tablas separadas para los géneros actores y directores para evitar la duplicidad de estos registros.                                                                                                                                                                                                                                                                                                                                          
+La base de datos está diseñada para gestionar de manera eficiente la información relacionada con películas, géneros, actores y directores. La estructura con tablas separadas para cada entidad y tablas intermedias para manejar las relaciones muchos a muchos (Movies_Genres, Movies_Actors, Movies_Directors) ofrece:
+
+- **Escalabilidad**: Facilita la adición de nuevas entidades o la expansión de las existentes sin necesidad de realizar cambios significativos en la estructura.
+- **Flexibilidad**: Permite relacionar una película con múltiples géneros, actores y directores de forma eficiente.
+- **Integridad Referencial**: Garantiza la integridad de los datos al manejar las relaciones de forma explícita en tablas intermedias.
+
+He decidido utilizar tablas separadas para géneros, actores y directores para evitar la duplicidad de registros y asegurar que cada entidad esté normalizada.
 
 ## Tecnologías Utilizadas
 
 - **Backend**: Flask (Python)
 - **Base de Datos**: MySQL
-- **Frontend**: HTML, CSS, JavaScript
+- **Frontend**: HTML, CSS
+
+## Instalación y Configuración
+
+1. Clona el repositorio a tu máquina local.
+2. Crea un entorno virtual e instala las dependencias:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # En Windows: venv\Scripts\activate
+    pip install -r requirements.txt
+    ```
+3. Configura la base de datos MySQL y actualiza la información de conexión en el archivo Python principal.
+4. Ejecuta la aplicación:
+    ```bash
+    flask run
+    ```
+
+## Conclusión
+
+Este proyecto refleja mi aprendizaje continuo en desarrollo web y bases de datos, integrando conocimientos adquiridos en distintos cursos y aplicándolos en un proyecto práctico que podría ser la base para una aplicación más compleja en el futuro.
