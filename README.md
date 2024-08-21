@@ -83,4 +83,8 @@ He decidido utilizar tablas separadas para géneros, actores y directores para e
 
 ## Conclusión
 
-Este proyecto refleja mi aprendizaje continuo en desarrollo web y bases de datos, integrando conocimientos adquiridos en distintos cursos y aplicándolos en un proyecto práctico que podría ser la base para una aplicación más compleja en el futuro.
+Con este proyecto he podido refrescar mis conocimientos tanto en html y css, también he podido diseñar y crear una base de datos relacional con MySLQ practicando  consultas, triggers, transacciones y funciones sobre la misma.
+Y finalmente mediante Python he podido realizar consultas y modificaciones en la base de datos desde la propia página web, lo cual me ha parecido muy interesante y útil.
+
+## Presentación
+https://docs.google.com/presentation/d/1Sg3eAa2nUAZO3CN-ed7M3T2XGH32P9z3jAoEmGm_HBQ/edit?usp=sharing
