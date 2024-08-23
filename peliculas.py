@@ -176,7 +176,8 @@ def movie_details(movie_id):
                GROUP_CONCAT(DISTINCT g.name ORDER BY g.name ASC SEPARATOR ', ') as genres,
                GROUP_CONCAT(DISTINCT a.name ORDER BY a.name ASC SEPARATOR ', ') as actors,
                GROUP_CONCAT(DISTINCT d.name ORDER BY d.name ASC SEPARATOR ', ') as directors,
-               de.budget, de.box_office, de.duration as detail_duration
+               de.budget, de.box_office, de.duration as detail_duration,
+               r.review, r.date as review_date
         FROM Movies m
         LEFT JOIN Movies_Genres mg ON m.movie_id = mg.movie_id
         LEFT JOIN Genres g ON mg.genre_id = g.genre_id
@@ -184,7 +185,8 @@ def movie_details(movie_id):
         LEFT JOIN Actors a ON ma.actor_id = a.actor_id
         LEFT JOIN Movies_Directors md ON m.movie_id = md.movie_id
         LEFT JOIN Directors d ON md.director_id = d.director_id
-        LEFT JOIN Movies_details de ON m.movie_id = de.movie_id
+        LEFT JOIN Movies_Details de ON m.movie_id = de.movie_id
+        LEFT JOIN Reviews r ON m.movie_id = r.movie_id
         WHERE m.movie_id = %s
         GROUP BY m.movie_id
     """, (movie_id,))

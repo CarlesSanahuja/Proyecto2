@@ -5,9 +5,9 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
-    background-image: url(/static/images/cine1.jpg);
-    background-size: cover;
+    background-image: url(/static/images/cine1.jpg); 
     color: #fff;
+    background-size: cover;
 }
 
 .container {
@@ -133,4 +133,9 @@ h1{
     padding: 20px;
     margin: 20px 0;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.info{
+    display: flex;
+    padding-left: 60px;
+    color: #000;
 }

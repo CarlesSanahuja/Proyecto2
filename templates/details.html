@@ -1,27 +1,37 @@
+<!-- details.html -->
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalles de la Película</title>
+    <title>{{ movie.title }} - Details</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="../static/images/73960.png"type="image/x-icon">
 </head>
 <body>
-    <h1>Detalles de la Película</h1>
-    <div class="movie-details">
-        <h2>{{ movie.title }} ({{ movie.release_year }})</h2>
-        <p><strong>Duración:</strong> {{ movie.duration }} minutos</p>
-        <p><strong>Sinopsis:</strong> {{ movie.synopsis }}</p>
-        <p><strong>Idioma:</strong> {{ movie.language }}</p>
-        <p><strong>País:</strong> {{ movie.country }}</p>
-        <p><strong>Calificación:</strong> {{ movie.rating }}</p>
-        <p><strong>Géneros:</strong> {{ movie.genres }}</p>
-        <p><strong>Actores:</strong> {{ movie.actors }}</p>
-        <p><strong>Directores:</strong> {{ movie.directors }}</p>
-        <p><strong>Presupuesto:</strong> {{ movie.budget }}</p>
-        <p><strong>Taquilla:</strong> {{ movie.box_office }}</p>
-        <p><strong>Duración Detallada:</strong> {{ movie.detail_duration }} minutos</p>
-    </div>
-    <a href="{{ url_for('index') }}">Volver al inicio</a>
+    <h1 class="info">{{ movie.title }}</h1>
+    <p class="info"><strong>Release Year:</strong> {{ movie.release_year }}</p>
+    <p class="info"><strong>Duration:</strong> {{ movie.duration }} minutes</p>
+    <p class="info"><strong>Synopsis:</strong> {{ movie.synopsis }}</p>
+    <p class="info"><strong>Language:</strong> {{ movie.language }}</p>
+    <p class="info"><strong>Country:</strong> {{ movie.country }}</p>
+    <p class="info"><strong>Rating:</strong> {{ movie.rating }}</p>
+    <p class="info"><strong>Genres:</strong> {{ movie.genres }}</p>
+    <p class="info"><strong>Actors:</strong> {{ movie.actors }}</p>
+    <p class="info"><strong>Directors:</strong> {{ movie.directors }}</p>
+    <p class="info"><strong>Budget:</strong> {{ movie.budget }}</p>
+    <p class="info"><strong>Box Office:</strong> {{ movie.box_office }}</p>
+    <p class="info"><strong>Additional Duration:</strong> {{ movie.detail_duration }} minutes</p>
+
+    <h2 class="info">Reviews</h2>
+    {% if movie.review %}
+        <p class="info"><strong>Review:</strong> {{ movie.review }}</p>
+        <p class="info"><strong>Date:</strong> {{ movie.review_date }}</p>
+    {% else %}
+        <p class="info">No reviews available.</p>
+    {% endif %}
+    
+    <a href="{{ url_for('index') }}" class="info">Back to Home</a>
 </body>
 </html>
+
